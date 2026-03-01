@@ -1,0 +1,8 @@
+Mistakes I did:
+1. I defined id, first_name, last_name twise in my function signature - once as a Query and once as a Path. this causes a Python Syntax Error, as Python doesnot allow duplicate parameters. 
+
+2. Though I attempted to use Path(...) for validation, there was no curly braces in the route, making them Query parameters.
+
+3. run the command from the root directory, not from the app directory.
+
+4. When using Pydantic models for validation, make sure to use the correct field types and validation rules.

@@ -1,0 +1,41 @@
+from fastapi import APIRouter, Query, Path, HTTPException
+from .schemas import SearchField, SearchResponse
+from .import services
+
+router = APIRouter(prefix="/student_marks", tags=["Students"])
+
+@router.get("/search/{search_field}/{search_value}", response_model=SearchResponse)
+def search_students(
+    search_field: SearchField = Path(...), 
+    search_value: str = Path(...), 
+    offset: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100)
+):
+    student_marks = services.load_students_marks_data()
+    all_students = list(student_marks)
+    
+    try:
+        filtered_students = services.filter_students_marks_data_by_field(all_students, search_field, search_value)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    if not filtered_students:
+        raise HTTPException(status_code=404, detail="No students found matching the criteria")
+
+    paginated_results = filtered_students[offset:offset + limit]
+    
+    return {
+    "metadata": {
+        "searched_by": search_field.value,
+        "searched_value": search_value
+    },
+    "pagination": {
+        "total_matches": len(filtered_students),
+        "showing": len(paginated_results),
+        "offset": offset,
+        "limit": limit
+    },
+    "results": paginated_results
+}
+
+    
