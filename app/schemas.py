@@ -30,18 +30,18 @@ class Marks(BaseModel):
 class StudentCreate(BaseModel):
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
-    id: int = Field(..., ge=0, le=100)
+    id: int = Field(..., ge=1)
     marks: Marks
 
 class MarksPatch(BaseModel):
     English: Optional[int] = Field(None, ge=0, le=100)
     Maths: Optional[int] = Field(None, ge=0, le=100)
-    Science: Optional[int] = Field(None   , ge=0, le=100)
+    Science: Optional[int] = Field(None, ge=0, le=100)
     
 class StudentCreatePatch(BaseModel):
     first_name: Optional[str] = Field(None, min_length=1, max_length=100)
     last_name: Optional[str] = Field(None, min_length=1, max_length=100)
-    id: Optional[int] = Field(None, ge=0, le=100)
+    id: Optional[int] = Field(None, ge=1)
     marks: Optional[MarksPatch] = None
 
 

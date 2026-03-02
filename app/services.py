@@ -1,6 +1,7 @@
 import json 
 from .config import STUDENTS_MARKS_FILE
 from .schemas import SearchField, StudentCreate, StudentCreatePatch
+from fastapi import HTTPException
 
 def load_students_marks_data() -> dict:
     """Loads Students Marks Data from JSON file"""
@@ -55,13 +56,13 @@ def update_student_full_data(student_id: int, student_data: StudentCreate) -> di
 
     for i, student in enumerate(all_students):
         if student.get("id") == student_id:
-            updated_studet_data = {
+            updated_student_data = {
                 "first_name": student_data.first_name,
-                "last_name": student_data.last_name,
-                "id": student_data.id,
+                "last_name": student_data.last_name,   
+                "id": student_id,
                 "marks": student_data.marks.model_dump()
             }
-            all_students[i] = updated_studet_data
+            all_students[i] = updated_student_data
             with open(STUDENTS_MARKS_FILE, "w") as f:
                 json.dump(all_students, f, indent=4)
             return updated_studet_data

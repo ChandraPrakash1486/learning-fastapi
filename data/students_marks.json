@@ -1,11 +1,11 @@
 [
     {
-        "first_name": "First_Name1",
-        "last_name": "Last_Name1",
+        "first_name": "string",
+        "last_name": "string",
         "id": 1,
         "marks": {
-            "English": 80,
-            "Maths": 90,
+            "English": 100,
+            "Maths": 100,
             "Science": 100
         }
     },
@@ -30,13 +30,13 @@
         }
     },
     {
-        "first_name": "First_Name4",
-        "last_name": "Last_Name4",
+        "first_name": "string",
+        "last_name": "string",
         "id": 4,
         "marks": {
-            "English": 50,
-            "Maths": 60,
-            "Science": 70
+            "English": 100,
+            "Maths": 100,
+            "Science": 100
         }
     },
     {

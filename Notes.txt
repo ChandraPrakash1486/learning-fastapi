@@ -9,3 +9,5 @@ Mistakes I did:
 
 5. I used the wrong field types for validation - used ge and le instead of min_length and max_length, for string fields.
 
+Mistakes I did for PUT and PATCH:
+1. schemas.py - Adjusted the id field to be of type int and used ge=1 for validation.

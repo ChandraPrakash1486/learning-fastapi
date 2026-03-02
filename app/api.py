@@ -48,7 +48,7 @@ def create_student(new_student_data: StudentCreate):
     }
     
 @router.put("/{student_id}")
-def update_student_put(student_id: int = Path(..., ge=1), student_data: StudentCreatePatch = None):
+def update_student_put(student_data: StudentCreate, student_id: int = Path(..., ge=1)):
     updated_student_data = services.update_student_full_data(student_id, student_data)
     return {
         "message": "Student updated successfully",
