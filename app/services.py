@@ -1,7 +1,7 @@
 import json 
 from .config import STUDENTS_MARKS_FILE
 from .schemas import SearchField, StudentCreate, StudentCreatePatch
-from fastapi import HTTPException
+from fastapi import HTTPException, Path
 
 def load_students_marks_data() -> dict:
     """Loads Students Marks Data from JSON file"""
@@ -11,7 +11,7 @@ def load_students_marks_data() -> dict:
         return json.load(f)
 
 
-def filter_students_marks_data_by_field(all_students:  list, field: SearchField, value: str) -> list:
+def filter_students_marks_data_by_field(all_students:list, field: SearchField, value: str) -> list:
     """Filters the student's marks list by field and value"""
     if field == SearchField.FIRST_NAME:
         if len(value) < 2:
@@ -31,7 +31,7 @@ def filter_students_marks_data_by_field(all_students:  list, field: SearchField,
     return [] 
 
 def create_student(student_data: StudentCreate) -> dict:
-    # ""Takes validated pydantic data and saves it into the JSON file"""
+    """Takes validated pydantic data and saves it into the JSON file"""
     all_students = load_students_marks_data()
     
     existing_ids = [student.get("id") for student in all_students]
@@ -65,7 +65,7 @@ def update_student_full_data(student_id: int, student_data: StudentCreate) -> di
             all_students[i] = updated_student_data
             with open(STUDENTS_MARKS_FILE, "w") as f:
                 json.dump(all_students, f, indent=4)
-            return updated_studet_data
+            return updated_student_data
     raise HTTPException(status_code=404, detail="Student not found")
 
 
@@ -96,5 +96,21 @@ def update_student_partial_data(student_id: int, patch_data: StudentCreatePatch)
     raise HTTPException(status_code=404, detail="Student not found")
 
     
+def delete_student_data(student_id: int) -> dict:
+    all_students = load_students_marks_data()
+
+    for i, student in enumerate(all_students):
+        if student.get("id") == student_id:
+            deleted_student = all_students.pop(i)
+            with open(STUDENTS_MARKS_FILE, "w") as f:
+                json.dump(all_students, f, indent=4)
+            return deleted_student
+    raise HTTPException(status_code=404, detail="Student not found")
+
+
+
+
+
+
 
     

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, Path, HTTPException, status
 from .schemas import SearchField, SearchResponse, StudentCreate, StudentCreatePatch
-from .import services
+from . import services
 
 router = APIRouter(prefix="/student_marks", tags=["Students"])
 
@@ -63,4 +63,11 @@ def update_student_patch(student_id: int = Path(..., ge=1), student_data: Studen
         "student": updated_student_data
     }
 
+@router.delete("/delete/{student_id}")
+def delete_student(student_id: int = Path(..., ge=1)):
+    deleted_student_data = services.delete_student_data(student_id)
+    return {
+        "message": "Student deleted successfully",
+        "student": deleted_student_data
+    }
 
