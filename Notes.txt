@@ -6,3 +6,6 @@ Mistakes I did:
 3. run the command from the root directory, not from the app directory.
 
 4. When using Pydantic models for validation, make sure to use the correct field types and validation rules.
+
+5. I used the wrong field types for validation - used ge and le instead of min_length and max_length, for string fields.
+

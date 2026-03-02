@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Query, Path, HTTPException
-from .schemas import SearchField, SearchResponse
+from fastapi import APIRouter, Query, Path, HTTPException, status
+from .schemas import SearchField, SearchResponse, StudentCreate
 from .import services
 
 router = APIRouter(prefix="/student_marks", tags=["Students"])
@@ -38,4 +38,12 @@ def search_students(
     "results": paginated_results
 }
 
+
+@router.post("/create", status_code=status.HTTP_201_CREATED)
+def create_student(new_student_data: StudentCreate):
+    saved_student_data = services.create_student(new_student_data)
+    return {
+        "message": "Student created successfully",
+        "student": saved_student_data
+    }
     
