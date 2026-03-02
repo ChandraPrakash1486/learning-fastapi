@@ -1,6 +1,6 @@
 import json 
 from .config import STUDENTS_MARKS_FILE
-from .schemas import SearchField, StudentCreate
+from .schemas import SearchField, StudentCreate, StudentCreatePatch
 
 def load_students_marks_data() -> dict:
     """Loads Students Marks Data from JSON file"""
@@ -48,6 +48,51 @@ def create_student(student_data: StudentCreate) -> dict:
     with open(STUDENTS_MARKS_FILE, "w") as f:
         json.dump(all_students, f, indent=4)
     return new_student_data
+
+
+def update_student_full_data(student_id: int, student_data: StudentCreate) -> dict:
+    all_students = load_students_marks_data()
+
+    for i, student in enumerate(all_students):
+        if student.get("id") == student_id:
+            updated_studet_data = {
+                "first_name": student_data.first_name,
+                "last_name": student_data.last_name,
+                "id": student_data.id,
+                "marks": student_data.marks.model_dump()
+            }
+            all_students[i] = updated_studet_data
+            with open(STUDENTS_MARKS_FILE, "w") as f:
+                json.dump(all_students, f, indent=4)
+            return updated_studet_data
+    raise HTTPException(status_code=404, detail="Student not found")
+
+
+def update_student_partial_data(student_id: int, patch_data: StudentCreatePatch) -> dict:
+    all_students = load_students_marks_data() #this loads the data from the JSON file as a list of dictionaries 
+
+    for i, student in enumerate(all_students): #i is the index of the student in the list, and student is the student dictionary
+        if student.get("id") == student_id:
+            updated_data = patch_data.model_dump(exclude_unset=True) #exclude_unset=True excludes any fields that are not set in the request
+
+            if "first_name" in updated_data:
+                student["first_name"] = updated_data["first_name"]
+
+            if "last_name" in updated_data:
+                student["last_name"] = updated_data["last_name"]
+
+            if "marks" in updated_data:
+                for subject, score in updated_data["marks"].items():
+                    student["marks"][subject] = score
+
+            all_students[i] = student #updates the student dictionary with the updated data
+
+
+            with open(STUDENTS_MARKS_FILE, "w") as f:
+                json.dump(all_students, f, indent=4)
+            return student
+
+    raise HTTPException(status_code=404, detail="Student not found")
 
     
 

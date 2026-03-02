@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 class SearchField(Enum):
     FIRST_NAME = "first_name"
@@ -32,5 +32,17 @@ class StudentCreate(BaseModel):
     last_name: str = Field(..., min_length=1, max_length=100)
     id: int = Field(..., ge=0, le=100)
     marks: Marks
+
+class MarksPatch(BaseModel):
+    English: Optional[int] = Field(None, ge=0, le=100)
+    Maths: Optional[int] = Field(None, ge=0, le=100)
+    Science: Optional[int] = Field(None   , ge=0, le=100)
     
+class StudentCreatePatch(BaseModel):
+    first_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    last_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    id: Optional[int] = Field(None, ge=0, le=100)
+    marks: Optional[MarksPatch] = None
+
+
     

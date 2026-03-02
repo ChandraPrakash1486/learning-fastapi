@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, Path, HTTPException, status
-from .schemas import SearchField, SearchResponse, StudentCreate
+from .schemas import SearchField, SearchResponse, StudentCreate, StudentCreatePatch
 from .import services
 
 router = APIRouter(prefix="/student_marks", tags=["Students"])
@@ -47,3 +47,20 @@ def create_student(new_student_data: StudentCreate):
         "student": saved_student_data
     }
     
+@router.put("/{student_id}")
+def update_student_put(student_id: int = Path(..., ge=1), student_data: StudentCreatePatch = None):
+    updated_student_data = services.update_student_full_data(student_id, student_data)
+    return {
+        "message": "Student updated successfully",
+        "student": updated_student_data
+    }
+
+@router.patch("/{student_id}")
+def update_student_patch(student_id: int = Path(..., ge=1), student_data: StudentCreatePatch = None):
+    updated_student_data = services.update_student_partial_data(student_id, student_data)
+    return {
+        "message": "Student updated successfully",
+        "student": updated_student_data
+    }
+
+
