@@ -1,0 +1,6 @@
+# .gitignore
+.env
+venv/
+__pycache__/
+data/users.json
+data/students_marks.json

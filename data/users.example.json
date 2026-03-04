@@ -1,0 +1,6 @@
+{
+    "Example_Admin": {
+        "password": "hashed_password_goes_here",
+        "role": "admin"
+    }
+}

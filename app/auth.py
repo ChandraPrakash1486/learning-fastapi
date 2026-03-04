@@ -7,11 +7,6 @@ from passlib.context import CryptContext
 from .config import USERS_FILE
 
 
-#1. Configuration ---
-#In production, NEVER hardcode this. It SHOULD be in a .env file.
-SECRET_KEY = "your-secret-key-here"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30 #Token expires after 30 minutes
 
 #2. Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
