@@ -1,10 +1,10 @@
 {
     "Admin_Name": {
-        "password": "iamadmin112",
+        "password": "$2b$12$GnZiIneJQtgaT.vKX13FKO/pKsEluEJBH1SOHZPqY.433XmByvK7G",
         "role": "admin"
     },
     "Guest_Name": {
-        "password": "guest123",
+        "password": "$2b$12$Hm.jVZJTfLUQwsjRm/apJuOM31kkbH7ol6mKG1ktg6Y2/.JcYfYQW",
         "role": "guest"
     }
 }

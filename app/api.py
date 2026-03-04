@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Query, Path, HTTPException, status, Depends
-from .schemas import SearchField, SearchResponse, StudentCreate, StudentCreatePatch, UserLogin
+from fastapi.security import OAuth2PasswordRequestForm
+from .schemas import SearchField, SearchResponse, StudentCreate, StudentCreatePatch, UserLogin      
 from . import services, auth
 
 router = APIRouter(prefix="/student_marks", tags=["Students"])
@@ -65,38 +66,43 @@ def update_student_patch(student_id: int = Path(..., ge=1), student_data: Studen
 
 
 
-@router.post("/login", tags=["Security"])
-def login_for_access_token(user_data: UserLogin):
+@router.post("/login")
+def login_for_access_token(user_data: OAuth2PasswordRequestForm = Depends()):
     users = auth.load_users()
-
     
-    if user_data.username not in users or users[user_data.username]["password"] != user_data.password:
+    #Verify if User exists
+    if user_data.username not in users:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password"
+            detail="User not found"
         )
-
-    # Generate a fake token for demonstration
-    fake_token = f"{user_data.username}-secret-token"
+    
+    #Verify if Password is correct
+    if not auth.verify_password(user_data.password, users[user_data.username]["password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password"
+        )
+    
+    
+    #Create the JWT token
+    access_token = auth.create_access_token(data={"sub": user_data.username})
     
     return {
-        "access_token": fake_token, 
+        "access_token": access_token, 
         "token_type": "bearer"
     }
 
-
-#--------------------Secure DELETE Logic---------------------
+#Create Decure DELETE
 @router.delete("/{student_id}")
-def remove_student(student_id: int, current_user: dict = Depends(auth.get_current_user)):
-
+def remove_student(student_id: int = Path(..., ge=1), current_user: dict = Depends(auth.get_current_user)):
+    #check role
     if current_user["role"] != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only admins can delete students"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+
     try:
         result = services.delete_student_data(student_id)
         return result
+
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
