@@ -44,5 +44,7 @@ class StudentCreatePatch(BaseModel):
     id: Optional[int] = Field(None, ge=1)
     marks: Optional[MarksPatch] = None
 
-
+class UserLogin(BaseModel):
+    username: str
+    password: str
     
